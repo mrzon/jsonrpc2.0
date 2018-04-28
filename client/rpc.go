@@ -1,8 +1,6 @@
 package client
 
 import (
-	"git.traveloka.com/source/tvlk-go-rpc/jsonrpc2.0/model"
-	"git.traveloka.com/source/tvlk-go-rpc/jsonrpc2.0/util"
 	"reflect"
 	"net/http"
 	"encoding/json"
@@ -10,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"time"
+	"github.com/mrzon/jsonrpc2.0/model"
+	"github.com/mrzon/jsonrpc2.0/util"
 )
 
 
@@ -39,8 +39,15 @@ func (r *RpcClient) callServer(fnName string, args []interface{}, timeOut time.D
 
 func Register(r *RpcClient) {
 	// Client use TCP transport.
-	t := reflect.TypeOf(r.Service).Elem()
-	v := reflect.ValueOf(r.Service).Elem()
+	t := reflect.TypeOf(r.Service)
+	var v reflect.Value
+	if t.Kind() == reflect.Ptr {
+		v = reflect.ValueOf(r.Service).Elem()
+		t = t.Elem()
+	} else {
+		v = reflect.ValueOf(r.Service)
+	}
+
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
@@ -75,7 +82,9 @@ func Register(r *RpcClient) {
 		})
 
 		f := v.FieldByName(field.Name)
-
+		if !f.CanSet() {
+			panic("Client service is need to be a pointer to a struct.")
+		}
 		f.Set(newFunc)
 	}
 }

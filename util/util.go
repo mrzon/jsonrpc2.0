@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"encoding/json"
 	"unicode"
-	"log"
 )
 
 func ToBoolPtr(val bool) *bool{
@@ -25,10 +24,10 @@ func ToCamel(val string) string {
 func GetVal(typeOf reflect.Type, val interface{}) (value reflect.Value) {
 	if val == nil {
 		value = reflect.Zero(typeOf)
-	} else if (typeOf.Kind() == reflect.Ptr ){
+	} else if typeOf.Kind() == reflect.Ptr {
 		temp := GetVal(typeOf.Elem(), val)
 		if !temp.CanAddr() {
-			log.Println("Primitive return can not be a pointer")
+			panic("Primitive return can not be a pointer")
 		} else {
 			value = temp.Addr()
 		}

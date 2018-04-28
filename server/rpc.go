@@ -6,14 +6,14 @@ import (
 	"reflect"
 	"encoding/json"
 	"io/ioutil"
-	"git.traveloka.com/source/tvlk-go-rpc/jsonrpc2.0/model"
 	"strings"
 	"context"
 	"log"
 	"sync"
 	"os"
 	"os/signal"
-	"git.traveloka.com/source/tvlk-go-rpc/jsonrpc2.0/util"
+	"github.com/mrzon/jsonrpc2.0/model"
+	"github.com/mrzon/jsonrpc2.0/util"
 )
 
 type RpcServerConnection struct {
