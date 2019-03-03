@@ -17,10 +17,12 @@ func (r *RpcClient) callServer(fnName string, args []interface{}, timeOut time.D
 	jsonRequest := model.NewJsonRpcRequest(fnName, args)
 
 	body, _ := json.Marshal(jsonRequest)
-
+	if r.Config.EnableLogging {
+		log.Println("Sending request:" + string(body))
+	}
 	reader := bytes.NewReader(body)
 
-	req, _ := http.NewRequest("POST", "http://" + r.Config.GetAddr(), reader)
+	req, _ := http.NewRequest("POST", r.Config.GetAddr(), reader)
 	req.Header["Content-Type"] = []string{"application/json"}
 
 	client := http.DefaultClient
@@ -31,6 +33,10 @@ func (r *RpcClient) callServer(fnName string, args []interface{}, timeOut time.D
 		return nil, err
 	} else {
 		strResponseBody, _ := ioutil.ReadAll(response.Body)
+		if r.Config.EnableLogging {
+			log.Println("Receiving response:" + string(strResponseBody))
+		}
+
 		jsonResponse := model.JsonRpcResponse{}
 		json.Unmarshal(strResponseBody, &jsonResponse)
 		return jsonResponse.Result, err
