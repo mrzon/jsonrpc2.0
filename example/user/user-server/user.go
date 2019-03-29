@@ -10,7 +10,7 @@ type UserServiceImpl struct {
 	loggedInUserMap   map[string]*user_common.User
 }
 
-func NewUserServiceImpl() *UserServiceImpl {
+func NewUserServiceImpl() UserServiceImpl {
 	impl := &UserServiceImpl{
 		registeredUserMap: make(map[string]*user_common.User),
 		loggedInUserMap:   make(map[string]*user_common.User),
@@ -52,5 +52,5 @@ func NewUserServiceImpl() *UserServiceImpl {
 		}
 
 	}
-	return impl
+	return *impl
 }
