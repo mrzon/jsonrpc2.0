@@ -83,3 +83,5 @@ fmt.Println(mathClient.Modulo(4, 3))    //print 1
 fmt.Println(mathClient.Substract(5, 2)) //print 3
 fmt.Println(mathClient.Multiply(10, 2)) //print 20
 ```
+
+For more inquiry: contact me.
