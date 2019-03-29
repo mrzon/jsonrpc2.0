@@ -1,0 +1,5 @@
+{
+  "phabricator.uri" : "https://phabricator.noc.tvlk.cloud/"
+  "repository.callsign" : "GOJSONRPC",
+  "arc.land.onto.default": "master"
+}
