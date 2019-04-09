@@ -84,4 +84,4 @@ fmt.Println(mathClient.Substract(5, 2)) //print 3
 fmt.Println(mathClient.Multiply(10, 2)) //print 20
 ```
 
-For more inquiry: contact me.
+For more inquiry: contact emerson@traveloka.com.
