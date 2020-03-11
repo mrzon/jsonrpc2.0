@@ -1,19 +1,20 @@
 package main
 
 import (
-	"github.com/mrzon/jsonrpc2.0/server"
-	"github.com/mrzon/jsonrpc2.0/example/user/user-server"
+	user_server "github.com/mrzon/jsonrpc2.0/example/user/user-server"
+	server "github.com/mrzon/jsonrpc2.0/server"
 )
 
-func main()  {
+func main() {
 	var rpcServerConn = server.NewRpcServerConnection()
 
 	userService := user_server.NewUserServiceImpl()
 
 	var userRpcServer = &server.RpcServer{
 		Config: server.Config{
-			Port:     8101,
-			EndPoint: "/user",
+			Port:          8101,
+			EndPoint:      "/user",
+			EnableLogging: true,
 		},
 		Service: userService,
 	}

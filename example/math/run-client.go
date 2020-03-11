@@ -23,6 +23,7 @@ func main() {
 	}
 	client.Register(mathRpcClient)
 	fmt.Println(mathServiceClient.Add(6, 2))
+	fmt.Println(mathServiceClient.Add3(6, 2, 10))
 	fmt.Println(mathServiceClient.Modulo(4, 3))
 	fmt.Println(mathServiceClient.Substract(5, 2))
 	fmt.Println(mathServiceClient.Multiply(10, 2))

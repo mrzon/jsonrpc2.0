@@ -1,17 +1,18 @@
 package client
 
 import (
-	"reflect"
-	"net/http"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"reflect"
+	"strings"
 	"time"
+
 	"github.com/mrzon/jsonrpc2.0/model"
 	"github.com/mrzon/jsonrpc2.0/util"
 )
-
 
 func (r *RpcClient) callServer(fnName string, args []interface{}, timeOut time.Duration) (result interface{}, err error) {
 	jsonRequest := model.NewJsonRpcRequest(fnName, args)
@@ -29,7 +30,7 @@ func (r *RpcClient) callServer(fnName string, args []interface{}, timeOut time.D
 	client.Timeout = timeOut
 	response, err := client.Do(req)
 	if err != nil {
-		log.Println("Call method", fnName , "resulting in Error.", err.Error())
+		log.Println("Call method", fnName, "resulting in Error.", err.Error())
 		return nil, err
 	} else {
 		strResponseBody, _ := ioutil.ReadAll(response.Body)
@@ -54,7 +55,6 @@ func Register(r *RpcClient) {
 		v = reflect.ValueOf(r.Service)
 	}
 
-
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 
@@ -62,7 +62,7 @@ func Register(r *RpcClient) {
 
 		newFunc := reflect.MakeFunc(fn, func(in []reflect.Value) (result []reflect.Value) {
 			param := make([]interface{}, len(in))
-			for j := 0; j < len(in) ; j++ {
+			for j := 0; j < len(in); j++ {
 				param[j] = in[j].Interface()
 			}
 			fnName := field.Name
@@ -71,9 +71,9 @@ func Register(r *RpcClient) {
 			methodType, _ := reflect.TypeOf(r.Service).Elem().FieldByName(fnName)
 
 			tag := methodType.Tag
-			customName := tag.Get("jsonrpc")
+			customName := tag.Get(util.MetaTag)
 			if customName != "" {
-				fnName = customName
+				fnName = strings.Split(customName, ",")[0]
 			}
 
 			processedData, err := r.callServer(fnName, param, r.Config.Timeout)

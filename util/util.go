@@ -1,17 +1,17 @@
 package util
 
 import (
-	"reflect"
 	"encoding/json"
+	"reflect"
 	"unicode"
 )
 
-func ToBoolPtr(val bool) *bool{
-	return &val;
+func ToBoolPtr(val bool) *bool {
+	return &val
 }
 
-func ToIntPtr(val int) *int{
-	return &val;
+func ToIntPtr(val int) *int {
+	return &val
 }
 
 func ToCamel(val string) string {
@@ -20,6 +20,8 @@ func ToCamel(val string) string {
 	return string(a)
 }
 
+//MetaTag is tagging keyword that will be recognized by the json rpc client and server
+var MetaTag string = "jsonrpc"
 
 func GetVal(typeOf reflect.Type, val interface{}) (value reflect.Value) {
 	if val == nil {

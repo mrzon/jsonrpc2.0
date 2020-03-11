@@ -26,7 +26,6 @@ type LoginUserResult struct {
 }
 
 type UserService struct {
-	Register func(spec RegisterUserSpec) RegisterUserResult;
-	Login    func(spec LoginUserSpec) LoginUserResult;
+	Register func(spec RegisterUserSpec) RegisterUserResult `jsonrpc:"register"`
+	Login    func(spec LoginUserSpec) LoginUserResult
 }
-

@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -72,16 +73,17 @@ func (rpcServerConn *RpcServerConnection) Register(r *RpcServer) {
 		jsonRequest := model.JsonRpcRequest{}
 		json.Unmarshal(body, &jsonRequest)
 
-		methodName := strings.Title(jsonRequest.Method)
-
 		serviceType := reflect.TypeOf(r.Service)
 		serviceValue := reflect.ValueOf(r.Service)
 		if serviceType.Kind() == reflect.Ptr {
 			serviceValue = serviceValue.Elem()
 		}
 
+		methodName := getMethodNameFromTagAndParam(r.Service, serviceValue, jsonRequest.Method, jsonRequest.Params)
+
 		method := serviceValue.FieldByName(methodName)
 		if !method.IsValid() {
+			//if method name is not valid, the user might use tag to call the service
 			jsonResponse := model.NewJsonRpcResponseWithError(map[string]string{
 				"code": "-32601", "message": "Method not found",
 			})
@@ -91,7 +93,7 @@ func (rpcServerConn *RpcServerConnection) Register(r *RpcServer) {
 			return
 		}
 		if r.Config.EnableLogging {
-			log.Println("Method ", methodName, ". is being called. Full Request:", string(body))
+			log.Println("Method ", methodName, "is being called. Full Request:", string(body))
 		}
 		in := make([]reflect.Value, method.Type().NumIn())
 
@@ -162,4 +164,33 @@ func (rpcServerConn *RpcServerConnection) Shutdown() {
 		log.Println("Shutting down in port:", rpcServerConn.Ports[i])
 		rpcServerConn.waitGroup.Done()
 	}
+}
+
+func getMethodNameFromTagAndParam(service interface{}, serviceValue reflect.Value, tagName string, params []interface{}) string {
+	tagNameDetail := fmt.Sprintf("%s,%d", tagName, len(params))
+	fieldName := getFieldName(tagNameDetail, util.MetaTag, service)
+	if fieldName != "" {
+		return fieldName
+	}
+
+	fieldName = getFieldName(tagName, util.MetaTag, service)
+	if fieldName != "" {
+		return fieldName
+	}
+
+	return strings.Title(tagName)
+}
+
+func getFieldName(tag, key string, s interface{}) (fieldname string) {
+	rt := reflect.TypeOf(s)
+	if rt.Kind() != reflect.Struct {
+		panic("bad type")
+	}
+	for i := 0; i < rt.NumField(); i++ {
+		f := rt.Field(i)
+		if f.Tag.Get(key) == tag {
+			return f.Name
+		}
+	}
+	return ""
 }

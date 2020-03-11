@@ -4,3 +4,5 @@ example/math/math-server/main/run-server
 example/math/run-client
 example/math/math-server/main/main
 example/math/math
+example/user/user
+example/user/user-server/main/main
