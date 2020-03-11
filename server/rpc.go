@@ -1,17 +1,18 @@
 package server
 
 import (
-	"net/http"
-	"strconv"
-	"reflect"
+	"context"
 	"encoding/json"
 	"io/ioutil"
-	"strings"
-	"context"
 	"log"
-	"sync"
+	"net/http"
 	"os"
 	"os/signal"
+	"reflect"
+	"strconv"
+	"strings"
+	"sync"
+
 	"github.com/mrzon/jsonrpc2.0/model"
 	"github.com/mrzon/jsonrpc2.0/util"
 )
@@ -89,6 +90,9 @@ func (rpcServerConn *RpcServerConnection) Register(r *RpcServer) {
 			writer.Write(responseBytes)
 			return
 		}
+		if r.Config.EnableLogging {
+			log.Println("Method ", methodName, ". is being called. Full Request:", string(body))
+		}
 		in := make([]reflect.Value, method.Type().NumIn())
 
 		for i := 0; i < len(in); i++ {
@@ -119,8 +123,8 @@ func (rpcServerConn *RpcServerConnection) Register(r *RpcServer) {
 }
 
 /**
-	Non Blocking
- */
+Non Blocking
+*/
 func (rpcServerConn *RpcServerConnection) Start() {
 	if rpcServerConn.isStarted {
 		return
@@ -136,8 +140,8 @@ func (rpcServerConn *RpcServerConnection) Start() {
 }
 
 /**
-	Blocking
- */
+Blocking
+*/
 func (rpcServerConn *RpcServerConnection) Serve() {
 	if rpcServerConn.isStarted {
 		rpcServerConn.waitGroup.Wait()
@@ -145,8 +149,8 @@ func (rpcServerConn *RpcServerConnection) Serve() {
 }
 
 /**
-	Blocking
- */
+Blocking
+*/
 func (rpcServerConn *RpcServerConnection) StartAndServe() {
 	rpcServerConn.Start()
 	rpcServerConn.Serve()

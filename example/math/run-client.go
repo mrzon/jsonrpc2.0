@@ -1,21 +1,24 @@
 package main
 
 import (
-	"github.com/mrzon/jsonrpc2.0/client"
-	"time"
-	"github.com/mrzon/jsonrpc2.0/example/math/math-common"
 	"fmt"
+	"time"
+
+	common "github.com/mrzon/jsonrpc2.0/example/math/math-common"
+
+	client "github.com/mrzon/jsonrpc2.0/client"
 )
 
-func main()  {
-	mathServiceClient := math_common.MathService{}
+func main() {
+	mathServiceClient := common.MathService{}
 	var mathRpcClient = &client.RpcClient{
 		Service: &mathServiceClient,
 		Config: client.Config{
-			Host:     "localhost",
-			Port:     7890,
-			EndPoint: "/math",
-			Timeout:  60 * time.Second,
+			Host:          "localhost",
+			Port:          7890,
+			EndPoint:      "/math",
+			Timeout:       60 * time.Second,
+			EnableLogging: true,
 		},
 	}
 	client.Register(mathRpcClient)

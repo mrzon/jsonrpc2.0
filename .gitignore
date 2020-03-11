@@ -2,3 +2,5 @@
 .idea/*
 example/math/math-server/main/run-server
 example/math/run-client
+example/math/math-server/main/main
+example/math/math
